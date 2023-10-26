@@ -1,6 +1,4 @@
 # Exploring Robot Morphology Spaces through Breadth-First Search and Random Query
-Evolutionary robotics offers a powerful framework for designing and evolving robot morphologies, particularly in the context of modular robots. However, the role of query mechanisms during the genotype-to-phenotype mapping process has been largely overlooked. This research addresses this gap by conducting a comparative analysis of query mechanisms in the brain-body co-evolution of modular robots. Using two different query mechanisms, Breadth-First Search (BFS) and Random Query, within the context of evolving robot morphologies using CPPNs and robot controllers using tensors, and testing them in two evolutionary frameworks, Lamarckian and Darwinian systems, this study investigates their influence on evolutionary outcomes and performance. The findings demonstrate the impact of the two query mechanisms on the evolution and performance of modular robot bodies, including morphological intelligence, diversity, and morphological traits. This study suggests that BFS is both more effective and efficient in producing highly performing robots. It also reveals that initially, robot diversity was higher with BFS compared to Random Query, but in the Lamarckian system, it declines faster, converging to superior designs, while in the Darwinian system, BFS led to higher end-process diversity.
-
 We compared two robot body genotype-to-phenotype mapping query mechanisms: breadth-first search (BFS) and random query. We tested these two methods within two frameworks: the Lamarckian evolution framework and the Darwinian evolution framework using a Mujoco-based wrapper called Revolve2. The release version of Revolve2 used in this project is v0.3.8-beta1 (available at https://github.com/ci-group/revolve2/releases/tag/v0.3.8-beta1)
 
 Both frameworks were tested with two tasks (panoramic rotation and point navigation).
@@ -18,6 +16,7 @@ simulation_time=30 secs for rotation task,
 simulation_time=40 secs for point navigation task.
 
 ``` 
+In addition, there are two control experiments, one is with the initial 50 robots' bodies from the main experiment (under branch fixed_body), and another one is with the random bodies at each generation (under branch random_body).
 
 ## Installation 
 Steps to install:
