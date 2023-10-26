@@ -397,6 +397,13 @@ class EAOptimizer(Process, Generic[Genotype, Fitness]):
                 self.__offspring_size,
             )
 
+            # select survivors between old individuals
+            old_survivors = self.__safe_select_survivors(
+                [i.genotype for i in self.__latest_population],
+                self.__latest_fitnesses[1],
+                len(self.__latest_population) - self.__offspring_size,
+            )
+
             # let user create offspring
             offspring = [
                 self.__safe_mutate(
@@ -433,13 +440,6 @@ class EAOptimizer(Process, Generic[Genotype, Fitness]):
                 )
                 for parent_indices, genotype in zip(parent_selections, offspring)
             ]
-
-            # let user select survivors between old and new individuals
-            old_survivors = self.__safe_select_survivors(
-                [i.genotype for i in self.__latest_population],
-                self.__latest_fitnesses[1],
-                len(self.__latest_population) - self.__offspring_size,
-            )
 
             # set ids for new individuals
             for (individual, learned_individual) in zip(new_individuals, new_learned_individuals):

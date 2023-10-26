@@ -19,6 +19,8 @@ from revolve2.core.physics.running import (ActorState, Batch,
 from .runner_mujoco import LocalRunner
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from array_genotype.array_genotype import ArrayGenotype
+from array_genotype.array_genotype_mutation import mutate as brain_mutation
 from revolve2.standard_resources import terrains
 
 class Optimizer(RevDEOptimizer):
@@ -85,7 +87,7 @@ class Optimizer(RevDEOptimizer):
         initial_population = np.repeat(np.expand_dims(inherited_brain, axis=0), population_size, axis=0)
         gaussian_noise = np.random.normal(scale=0.5, size=[len(initial_population)-1, inherited_brain.shape[0]])
         initial_population[1:] += gaussian_noise
-
+        
         await super().ainit_new(
             rng=rng,
             population_size=population_size,
@@ -162,6 +164,7 @@ class Optimizer(RevDEOptimizer):
         )
         self._cpg_network_structure = cpg_network_structure
 
+
     def _init_runner(self, num_simulators: int = 1) -> None:
         return LocalRunner(headless=True, num_simulators=num_simulators)
 
@@ -196,7 +199,7 @@ class Optimizer(RevDEOptimizer):
             controller = brain.make_controller(self._body, self._dof_ids)
 
             bounding_box = self._actor.calc_aabb()
-            env = Environment(EnvironmentActorController(controller, self._target_points, steer=False))
+            env = Environment(EnvironmentActorController(controller, self._target_points, steer=True))
             env.static_geometries.extend(self._TERRAIN.static_geometry)
             env.actors.append(
                 PosedActor(
@@ -218,10 +221,9 @@ class Optimizer(RevDEOptimizer):
 
         return np.array(
             [
-                # self._calculate_point_navigation(
-                #     environment_result, self._target_points
-                # )
-                self._calculate_panoramic_rotation(environment_result)
+                self._calculate_point_navigation(
+                    environment_result, self._target_points
+                )
                 for environment_result in batch_results.environment_results
             ]
         )
@@ -256,6 +258,7 @@ class Optimizer(RevDEOptimizer):
             distance -= compute_distance(targets[reached_target_counter], last_coord)
             new_path_len = sum(lengths[:]) - sum(lengths[:starting_idx])
             return fitness + (distance - 0.1*new_path_len)
+
 
     @staticmethod
     def _calculate_panoramic_rotation(results, vertical_angle_limit = math.pi/4) -> float:
